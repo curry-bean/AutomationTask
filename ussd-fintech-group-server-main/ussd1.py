@@ -19,6 +19,7 @@ app = Flask(__name__)
 # Google Calendar authentication and service setup
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
+GOOGLE_API_KEY="AIzaSyCQ09S8skpBmSh3wmVnkv32YzM2PRvuBdM"
 
 def authenticate_google_calendar():
     creds = None

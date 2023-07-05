@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, session
 import africastalking
 import os
 import datetime
@@ -14,6 +14,7 @@ sms = africastalking.SMS
 
 # Initialize Flask app
 app = Flask(__name__)
+app.secret_key = "your-secret-key"
 
 # Google Calendar authentication and service setup
 google_api_key = "AIzaSyCQ09S8skpBmSh3wmVnkv32YzM2PRvuBdM"
@@ -92,10 +93,14 @@ def ussd_callback():
     phone_number = request.values.get("phoneNumber", None)
     text = request.values.get("text", "default")
 
-    if text == "default":
+    if text == "":
+        # First USSD request
         response = "CON Welcome to the USSD application!\nPlease enter your email address:"
     elif "@" in text:
         email = text
+
+        # Save email in session
+        session['email'] = email
 
         # Determine the last Wednesday of the month
         today = datetime.date.today()
