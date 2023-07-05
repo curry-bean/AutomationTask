@@ -8,8 +8,8 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 
 # Initialize Africa's Talking SMS service
-username = ""
-api_key = ""
+username = "sandbox"
+api_key = "36e295766b1cc1af7c6db221683bd7322272f1d7f18e1243b9da5597436428e0"
 africastalking.initialize(username, api_key)
 sms = africastalking.SMS
 
@@ -22,20 +22,13 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 def authenticate_google_calendar():
     creds = None
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
-    service = build('calendar', 'v3', credentials=creds)
+    if os.environ.get('GOOGLE_API_KEY'):
+        creds = os.environ.get('GOOGLE_API_KEY')
+    else:
+        print("Error: Google API key not found.")
+        exit(1)
+    service = build('calendar', 'v3', developerKey=creds)
     return service
-
 
 service = authenticate_google_calendar()
 
